@@ -1,0 +1,91 @@
+<!doctype html>
+<html ng-app="app">
+
+<head>
+    <title>Animation Demo</title>
+    <link href="assets/css/styles.css" rel="stylesheet" type="text/css"> </link>
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/angular-animate.min.js"></script>
+    <script src="assets/js/angular-messages.js"></script>
+</head>
+
+<body ng-cloak>
+
+    <div ng-controller="WeatherController as weatherVm">
+
+        Global Filter : <input type="text" ng-model='search.$'> <br/> 
+        Cloud Filter : <input type="text" ng-model='search.clouds'><br/> 
+        Date Filter : <input type="text" ng-model='search.dt'> <br/> 
+        Result limit Filter : <input type="number" min="1" max="14" ng-model="numLimit">
+
+        <form class="form-search" name="weatherForm" novalidate>
+            <table>
+                <tr>
+                    <td colspan='6'><b>City :</b> {{weatherVm.dataWeather.city.name}}, <b>Country :</b> {{weatherVm.dataWeather.city.country}}</td>
+                </tr>
+                <tr>
+                    <td><b>Sr No. </b></td>
+                    <td><b>Cloud</b></td>
+                    <td><b>Date</b></td>
+                    <td><b>Min Temp.</b></td>
+                    <td><b>Max Temp.</b></td>
+                    <td><b>Description</b></td>
+                </tr>
+                <tr ng-repeat="weather in weatherVm.dataWeather.list | filter:search:strict | limitTo:numLimit " class="animate-repeat">
+                    <td>{{$index+1}}</td>
+                    <td>{{weather.clouds}}</td>
+                    <td>{{weather.dt*1000 | date:'EEEE, d MMMM , yyyy'}}</td>
+                    <td>{{weather.temp.min}}</td>
+                    <td>{{weather.temp.max}}</td>
+                    <td>{{weather.weather[0].description}}</td>
+                </tr>
+            </table>
+            <select ng-model="weatherVm.selection" ng-options="item for item in weatherVm.items"></select>
+            <code>selected = {{weatherVm.selection}}</code>
+            <div ng-switch on="weatherVm.selection">
+                <div ng-switch-when="Code 2">Code 2</div>
+            </div>
+            <hr/>
+            <select ng-model="weatherVm.template" ng-options="t.name for t in weatherVm.templates">
+                <option value="">(blank)</option>
+            </select> url of the template: <code>{{weatherVm.template.url}}</code>
+            <hr/>
+            <div class="slide-animate-container">
+                <div class="slide-animate" ng-include="weatherVm.template.url"></div>
+            </div><br/>
+            <input type="text" name="mobileno" ng-model="weatherVm.user.mobileno" ng-pattern="weatherVm.mobileNoRegex" ng-required="true"
+                class="my-input">
+            <div ng-messages="weatherForm.mobileno.$error" class="my-messages">
+                <div ng-message="required">
+                    mobileno is required
+                </div>
+                <div ng-message="pattern">
+                    mobile no. should be 10 digit number.
+                </div>
+            </div>
+            <button ng-click="weatherVm.addForm(weatherForm)">Save</button>
+        </form>
+        <label for="show">Show: </label><input id="show" type="checkbox" ng-model="checked1" aria-label="Toggle ngShow"><br/>
+        <div class="check-element animate-show-hide" ng-show="checked1">
+            I show up when your checkbox is checked.
+        </div>
+        <label for="hide"> Hide: </label><input id="hide" type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br/>
+        <div class="check-element animate-show-hide " ng-hide="checked">
+            I hide when your checkbox is checked.
+        </div>
+    
+    <div ng-if="onOff" class="fold-animation">
+  This element will go BOOM
+</div>
+<button ng-click="onOff=true">Fold In</button>
+    
+    </div>
+
+
+
+    <script src="app.module.js"></script>
+    <script src="app.controller.js"></script>
+    <script src="app.factory.js"></script>
+</body>
+
+</html>
